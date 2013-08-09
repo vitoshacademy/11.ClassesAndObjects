@@ -1,0 +1,69 @@
+/*Write a method that calculates the number of workdays between today and given date, passed as parameter. 
+* Consider that workdays are all days from Monday to Friday except a fixed list of public holidays specified preliminary as array.*/
+
+using System;
+
+public class NumberOfWorkDays
+{
+    public static void Main()
+    {
+        // input
+        Console.WriteLine("Enter a future date in YYYY/MM/DD format");
+        string[] endDateStr = Console.ReadLine().Split('/');
+        int day = int.Parse(endDateStr[2]);
+        int month = int.Parse(endDateStr[1]);
+        int year = int.Parse(endDateStr[0]);
+
+        // main logic
+        DateTime startDay = DateTime.Today;
+        DateTime endDay = new DateTime(year, month, day);
+        int timeLen = 0;
+        timeLen = Math.Abs((endDay - startDay).Days);
+        if (startDay > endDay)
+        {
+            startDay = endDay;
+            endDay = DateTime.Today;
+        }
+
+        // Holydays
+        DateTime[] holidays =
+        {
+            new DateTime(2013, 10, 6),      //my Birthday!
+            new DateTime(2014, 3, 3),      //Bulgarian national holiday 
+            new DateTime(2013, 9, 6),     //Bulgarian national holiday
+            new DateTime(2013, 12, 24),  //Christmas
+            new DateTime(2013,12,25),   // Christmas ++
+            new DateTime(2014,1,1)     //New Year!
+        };
+
+        int workDayCounter = 0;
+        bool isHoliday = false;
+
+        // Day checker
+        for (int i = 0; i < timeLen; i++)
+        {
+            startDay = startDay.AddDays(1);
+            if (startDay.DayOfWeek != DayOfWeek.Sunday && startDay.DayOfWeek != DayOfWeek.Saturday)
+            {
+                for (int j = 0; j < holidays.Length; j++)
+                {
+                    if (startDay == holidays[j])
+                    {
+                        isHoliday = true;
+                        break;
+                    }
+                }
+
+                if (!isHoliday)
+                {
+                    workDayCounter++;
+                }
+
+                isHoliday = false;
+            }
+        }
+
+        Console.WriteLine("There are {0} work days.",workDayCounter);
+        Console.WriteLine("The total number of days is {0}.",timeLen);
+    }
+}
